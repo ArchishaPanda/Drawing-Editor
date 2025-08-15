@@ -1,0 +1,100 @@
+@startuml
+
+top to bottom direction
+scale 5
+skinparam linetype ortho
+
+class DrawingApp {
+    - master : Tk
+    - canvas : DrawCanvas
+    + create_menu()
+}
+
+class DrawCanvas {
+    - bind()
+    - shapes : List<str>
+    - shape_object : List<Shape>
+    - selected_shapes : List<Shape>
+    - properties_text_ids : List<int>
+    - current_tool : str
+    - current_color : str
+    - current_style : str
+    - start_x : int
+    - start_y : int
+    - current_shape : Shape
+    - file_manager : FileManager
+    - file_opened : bool
+    - mode : str
+    - moving : bool
+    + show_popup_message(message)
+    + save_file()
+    + open_file()
+    + save_to_xml()
+    + redraw_shapes()
+    + set_mode(action)
+    + set_tool(tool)
+    + set_color(color)
+    + set_style(style)
+    + clear_properties_text()
+    + on_click(event)
+    + construct_shape_from_shape_object()
+    + on_drag(event)
+    + draw_shape(start_x, start_y, end_x, end_y)
+    + on_release(event)
+    + highlight_shapes_in_area(x1, y1, x2, y2)
+    + delete_shape()
+    + copy_shape()
+    + move_shape(event)
+    + edit_selected_shape()
+    + update_rectangle_style(shape_id, style, color)
+    + group_shapes()
+    + ungroup_shapes()
+}
+
+class FileManager {
+    - current_file : str
+    - unsaved_changes : bool
+    + save_file(canvas)
+    + open_file(canvas)
+    + save_to_xml(canvas)
+}
+
+class Group {
+    - shapes : List<Shape>
+    + add_shapes(Shape)
+    + remove_shapes(Shape)
+}
+
+class Shape {
+    - canvas : Canvas
+    - color : str
+    - x1 : int
+    - x2 : int
+    - y1 : int
+    - y2 : int
+    - shape_id : int
+    - groups : List<Group>
+    + add_group(Group)
+    + update()
+    + finalize()
+}
+
+class Line {
+    + update(start_x, start_y, end_x, end_y)
+    + to_xml()
+}
+
+class Rectangle {
+    - style : str
+    + update(start_x, start_y, end_x, end_y)
+    + draw_rounded_rectangle(x1, y1, x2, y2, radius, **kwargs)
+    + to_xml()
+}
+
+DrawingApp --* DrawCanvas
+DrawCanvas *-- FileManager
+DrawCanvas *-- Shape
+Shape <|-- Line
+Shape <|-- Rectangle
+Shape *-- Group
+@enduml
